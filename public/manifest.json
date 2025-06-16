@@ -1,0 +1,35 @@
+{
+  "name": "Ephemeral Mail - Temporary Email Service",
+  "short_name": "EphemeralMail",
+  "description": "Generate disposable email addresses instantly for privacy and testing",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2563eb",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/eemail.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Generate Email",
+      "short_name": "Generate",
+      "description": "Generate a new temporary email address",
+      "url": "/?action=generate",
+      "icons": [
+        {
+          "src": "/eemail.png",
+          "sizes": "96x96"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{
+  "name": "ephemeral-mail-frontend",
+  "private": false,
+  "version": "1.0.0",
+  "description": "A modern, responsive frontend for the EphemeralMail temporary email service. Built with Svelte, Vite, and Tailwind CSS with a sleek terminal/console-inspired interface.",
+  "keywords": [
+    "temporary-email",
+    "disposable-email",
+    "svelte",
+    "vite",
+    "tailwindcss",
+    "privacy",
+    "testing",
+    "ephemeral-mail"
+  ],
+  "author": "tacssuki",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tacssuki/EphemeralMail-svelte.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tacssuki/EphemeralMail-svelte/issues"
+  },
+  "homepage": "https://github.com/tacssuki/EphemeralMail-svelte#readme",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 4173",
+    "dev:3000": "vite --port 3000",
+    "dev:5173": "vite --port 5173",
+    "build": "vite build",
+    "preview": "vite preview",
+    "deploy": "npm run build && npm run preview",
+    "deploy:prod": "npm run build",
+    "setup": "npm install && cp .env.example .env",
+    "clean": "rm -rf dist node_modules/.cache .vite",
+    "clean:all": "rm -rf dist node_modules .vite && npm install",
+    "clean:redundant": "find . -name '*_old*' -o -name '*_OLD*' -o -name '*_new*' -o -name '*_NEW*' -o -name '*.bak' -o -name '*.backup' | xargs rm -f"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^5.0.3",
+    "@tailwindcss/typography": "^0.5.15",
+    "autoprefixer": "^10.4.21",
+    "postcss": "^8.5.6",
+    "svelte": "^5.28.1",
+    "tailwindcss": "^3.4.0",
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "@tailwindcss/typography": "^0.5.16",
+    "axios": "^1.10.0",
+    "lucide-svelte": "^0.515.0"
+  }
+}

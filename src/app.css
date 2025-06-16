@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Ensure proper dark mode support */
+  html {
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  html.dark {
+    color-scheme: dark;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  
+  .btn-primary {
+    @apply bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500 shadow-sm hover:shadow-md transform hover:-translate-y-0.5 dark:bg-blue-500 dark:hover:bg-blue-600;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200 focus:ring-gray-500 border border-gray-300 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 dark:border-gray-600;
+  }
+  
+  .btn-danger {
+    @apply bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-sm hover:shadow-md dark:bg-red-500 dark:hover:bg-red-600;
+  }
+  
+  .btn-icon {
+    @apply p-2;
+  }
+  
+  .btn-large {
+    @apply px-6 py-3 text-base;
+  }
+  
+  .input {
+    @apply w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors dark:bg-gray-800 dark:border-gray-600 dark:text-white dark:focus:ring-blue-400;
+  }
+  
+  .card {
+    @apply bg-white rounded-xl shadow-lg backdrop-blur-sm border border-white/20 dark:bg-gray-800 dark:border-gray-700;
+  }
+  
+  .gradient-bg {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+  
+  /* Dark mode gradient */
+  .dark .gradient-bg {
+    background: linear-gradient(135deg, #4c63d2 0%, #5b3a8f 100%);
+  }
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
