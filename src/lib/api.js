@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { browserFingerprint } from './fingerprint.js';
 
 // API Configuration
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:4444';
@@ -9,11 +10,20 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // Enable cookies for session management
 });
 
-// Request interceptor for logging
+// Request interceptor for fingerprinting and logging
 api.interceptors.request.use(
-  (config) => {
+  async (config) => {
+    // Add browser fingerprint to headers
+    try {
+      const fingerprint = await browserFingerprint.generateFingerprint();
+      config.headers['X-Browser-Fingerprint'] = fingerprint;
+    } catch (error) {
+      console.warn('Failed to generate fingerprint:', error);
+    }
+    
     console.log(`API Request: ${config.method?.toUpperCase()} ${config.url}`);
     return config;
   },
