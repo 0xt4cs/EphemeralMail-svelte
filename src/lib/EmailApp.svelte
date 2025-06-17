@@ -112,18 +112,27 @@
       console.error('Failed to load emails:', err);
       emailsForAddress = [];
     }
-  }
-  // Load specific email content
+  }  // Load specific email content
   async function loadEmailContent(emailId) {
     try {
+      console.log('Loading email content for ID:', emailId);
       const response = await emailService.getEmailById(emailId);
+      console.log('Email content response:', response);
+      
       if (response.success && response.data) {
         selectedEmailContent = response.data;
+        console.log('Selected email content:', selectedEmailContent);
+        console.log('HTML Body:', selectedEmailContent.htmlBody);
+        console.log('Text Body:', selectedEmailContent.textBody);
+      } else {
+        console.error('Invalid response format:', response);
+        await dialogHelpers.error('Load Failed', 'Invalid response format from server');
       }
     } catch (err) {
       console.error('Failed to load email content:', err);
       await dialogHelpers.error('Load Failed', `Failed to load email content: ${err.message}`);
-    }  }
+    }
+  }
 
   // Select an email address from the left panel
   function selectEmailAddress(address) {
@@ -201,17 +210,44 @@
       refreshInterval = null;
     }
   }
-
   // Format date for display
   function formatDate(dateString) {
-    return new Date(dateString).toLocaleString();
+    if (!dateString) return 'Unknown date';
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) {
+        return 'Invalid date';
+      }
+      return date.toLocaleString();
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return 'Invalid date';
+    }
   }
-
   // Format email preview
   function getEmailPreview(email) {
     const subject = email.subject || 'No Subject';
     const from = email.from || 'Unknown Sender';
-    return { subject, from };  }
+    
+    // Extract preview text from HTML or text content
+    let preview = '';
+    if (email.htmlBody) {
+      // Strip HTML tags and get first 100 characters
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = email.htmlBody;
+      preview = tempDiv.textContent || tempDiv.innerText || '';
+    } else if (email.textBody) {
+      preview = email.textBody;
+    }
+    
+    // Limit preview to 100 characters and add ellipsis if needed
+    if (preview.length > 100) {
+      preview = preview.substring(0, 100) + '...';
+    }
+    
+    return { subject, from, preview: preview.trim() };
+  }
   
   // Toggle dark mode with optimized storage
   function toggleDarkMode() {
@@ -937,8 +973,7 @@
               <li 
                 class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors {selectedEmailContent?.id === email.id ? 'bg-blue-50 dark:bg-blue-900/30 border-r-2 border-blue-500' : ''}"
                 on:click={() => selectEmail(email)}
-              >
-                <div class="flex items-start justify-between">
+              >                <div class="flex items-start justify-between">
                   <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2 mb-1">
                       {#if !email.isRead}
@@ -947,7 +982,10 @@
                       <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{preview.subject}</p>
                     </div>
                     <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{preview.from}</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-500">{formatDate(email.receivedAt)}</p>
+                    {#if preview.preview}
+                      <p class="text-xs text-gray-500 dark:text-gray-500 truncate mt-1">{preview.preview}</p>
+                    {/if}
+                    <p class="text-xs text-gray-500 dark:text-gray-500">{formatDate(email.createdAt)}</p>
                   </div>
                 </div>
               </li>
@@ -987,21 +1025,20 @@
           <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
             <p><span class="font-medium">From:</span> {selectedEmailContent.from || 'Unknown'}</p>
             <p><span class="font-medium">To:</span> {selectedEmailContent.to || selectedEmailAddress}</p>
-            <p><span class="font-medium">Date:</span> {formatDate(selectedEmailContent.receivedAt)}</p>
+            <p><span class="font-medium">Date:</span> {formatDate(selectedEmailContent.createdAt)}</p>
             {#if selectedEmailContent.attachments && selectedEmailContent.attachments.length > 0}
               <p><span class="font-medium">Attachments:</span> {selectedEmailContent.attachments.length} file(s)</p>
             {/if}
           </div>
         </div>
-        
-        <!-- Email Body -->
+          <!-- Email Body -->
         <div class="flex-1 overflow-y-auto p-4">
-          {#if selectedEmailContent.html}
+          {#if selectedEmailContent.htmlBody}
             <div class="prose dark:prose-invert max-w-none">
-              {@html selectedEmailContent.html}
+              {@html selectedEmailContent.htmlBody}
             </div>
-          {:else if selectedEmailContent.text}
-            <pre class="whitespace-pre-wrap font-sans text-sm text-gray-800 dark:text-gray-200">{selectedEmailContent.text}</pre>
+          {:else if selectedEmailContent.textBody}
+            <pre class="whitespace-pre-wrap font-sans text-sm text-gray-800 dark:text-gray-200">{selectedEmailContent.textBody}</pre>
           {:else}
             <p class="text-gray-500 dark:text-gray-400 italic">No content available</p>
           {/if}
