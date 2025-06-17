@@ -25,19 +25,13 @@ This is a **completely optional** web interface for the [EphemeralMail Backend A
 - 📱 **Mobile-First** - Responsive design that works perfectly on all devices
 - ⚡ **Lightning Fast** - Built with Svelte and Vite for optimal performance
 - 🌙 **Dark Mode** - Toggle between light and dark themes
-<<<<<<< HEAD
-- 💬 **Smart Notifications** - Beautiful dialogs instead of browser alerts
 - 📧 **Real-time Updates** - Live email checking and updates
 - 💾 **Smart Storage** - Local storage with backend synchronization
 - 🔄 **PWA Ready** - Progressive Web App capabilities
-- 📶 **Offline-First** - Works without constant internet connection
-- 🎯 **Smart Layout** - Three-panel layout optimized for all screen sizes
-=======
 - 📧 **Real-time Updates** - Live email checking and updates
 - 💾 **Smart Storage** - Local storage with backend synchronization
 - 🔄 **PWA Ready** - Progressive Web App capabilities
 - 🎯 **Smart Navigation** - Three-panel layout optimized for all screen sizes
->>>>>>> af422b724d8f773a7d3def8d7bea086be59f12b0
 
 ---
 
