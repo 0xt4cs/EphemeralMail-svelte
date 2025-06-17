@@ -21,11 +21,9 @@ A modern, responsive frontend for the **[EphemeralMail Backend](https://github.c
 - 📱 **Mobile-First** - Responsive design that works on all devices
 - ⚡ **Lightning Fast** - Built with Svelte and Vite for optimal performance
 - 🌙 **Dark Mode** - Toggle between light and dark themes
-- 💬 **Custom Dialogs** - Beautiful notifications instead of browser alerts
 - 📧 **Real-time Updates** - Live email checking and updates
 - 💾 **Smart Storage** - Local storage with backend synchronization
 - 🔄 **PWA Ready** - Progressive Web App capabilities
-- 📶 **Offline-First** - Works without constant internet connection
 - 🎯 **Smart Navigation** - Three-panel layout optimized for all screen sizes
 
 ### Backend Requirement
