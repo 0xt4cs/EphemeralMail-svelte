@@ -980,12 +980,11 @@
                         <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
                       {/if}
                       <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{preview.subject}</p>
-                    </div>
-                    <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{preview.from}</p>
+                    </div>                    <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{preview.from}</p>
                     {#if preview.preview}
-                      <p class="text-xs text-gray-500 dark:text-gray-500 truncate mt-1">{preview.preview}</p>
+                      <p class="text-xs text-gray-600 dark:text-gray-300 truncate mt-1 bg-gray-50 dark:bg-gray-800 px-2 py-1 rounded italic">{preview.preview}</p>
                     {/if}
-                    <p class="text-xs text-gray-500 dark:text-gray-500">{formatDate(email.createdAt)}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{formatDate(email.createdAt)}</p>
                   </div>
                 </div>
               </li>
@@ -1030,17 +1029,24 @@
               <p><span class="font-medium">Attachments:</span> {selectedEmailContent.attachments.length} file(s)</p>
             {/if}
           </div>
-        </div>
-          <!-- Email Body -->
+        </div>        <!-- Email Body -->
         <div class="flex-1 overflow-y-auto p-4">
           {#if selectedEmailContent.htmlBody}
-            <div class="prose dark:prose-invert max-w-none">
-              {@html selectedEmailContent.htmlBody}
+            <!-- HTML Email Content with preserved styling -->
+            <div class="email-content bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+              <div class="html-email-wrapper">
+                {@html selectedEmailContent.htmlBody}
+              </div>
             </div>
           {:else if selectedEmailContent.textBody}
-            <pre class="whitespace-pre-wrap font-sans text-sm text-gray-800 dark:text-gray-200">{selectedEmailContent.textBody}</pre>
+            <!-- Plain Text Email Content -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+              <pre class="whitespace-pre-wrap font-mono text-sm text-gray-900 dark:text-gray-100 leading-relaxed">{selectedEmailContent.textBody}</pre>
+            </div>
           {:else}
-            <p class="text-gray-500 dark:text-gray-400 italic">No content available</p>
+            <div class="flex items-center justify-center h-32 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+              <p class="text-gray-500 dark:text-gray-400 italic">No content available</p>
+            </div>
           {/if}
         </div>
         
@@ -1109,8 +1115,220 @@
     background: #c1c1c1;
     border-radius: 3px;
   }
-  
-  :global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
+    :global(.overflow-y-auto::-webkit-scrollbar-thumb:hover) {
     background: #a8a8a8;
+  }
+
+  /* ===== EMAIL CONTENT STYLING ===== */
+  
+  /* HTML Email Wrapper - preserve company designs while ensuring readability */
+  :global(.html-email-wrapper) {
+    line-height: 1.6;
+    word-wrap: break-word;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Reset and normalize HTML email styles */
+  :global(.html-email-wrapper *) {
+    max-width: 100% !important;
+    box-sizing: border-box;
+  }
+
+  /* Ensure text is readable in both light and dark modes */
+  :global(.html-email-wrapper) {
+    color: #1f2937; /* Default dark gray for light mode */
+  }
+
+  :global(.dark .html-email-wrapper) {
+    color: #f9fafb; /* Light gray for dark mode */
+  }
+
+  /* Company email styling preservation */
+  :global(.html-email-wrapper table) {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  :global(.html-email-wrapper td, .html-email-wrapper th) {
+    padding: 8px;
+    vertical-align: top;
+  }
+
+  /* Headers styling */
+  :global(.html-email-wrapper h1, .html-email-wrapper h2, .html-email-wrapper h3, .html-email-wrapper h4, .html-email-wrapper h5, .html-email-wrapper h6) {
+    margin: 16px 0 8px 0;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  :global(.html-email-wrapper h1) { font-size: 1.875rem; }
+  :global(.html-email-wrapper h2) { font-size: 1.5rem; }
+  :global(.html-email-wrapper h3) { font-size: 1.25rem; }
+  :global(.html-email-wrapper h4) { font-size: 1.125rem; }
+  :global(.html-email-wrapper h5) { font-size: 1rem; }
+  :global(.html-email-wrapper h6) { font-size: 0.875rem; }
+
+  /* Paragraph and text styling */
+  :global(.html-email-wrapper p) {
+    margin: 12px 0;
+    line-height: 1.6;
+  }
+
+  /* Links styling - preserve colors but ensure visibility */
+  :global(.html-email-wrapper a) {
+    text-decoration: underline;
+    transition: opacity 0.2s ease;
+  }
+
+  :global(.html-email-wrapper a:hover) {
+    opacity: 0.8;
+  }
+
+  /* Lists styling */
+  :global(.html-email-wrapper ul, .html-email-wrapper ol) {
+    margin: 12px 0;
+    padding-left: 24px;
+  }
+
+  :global(.html-email-wrapper li) {
+    margin: 4px 0;
+    line-height: 1.5;
+  }
+
+  /* Images - responsive and contained */
+  :global(.html-email-wrapper img) {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 4px;
+    display: block;
+    margin: 8px auto;
+  }
+
+  /* Blockquotes */
+  :global(.html-email-wrapper blockquote) {
+    border-left: 4px solid #d1d5db;
+    padding-left: 16px;
+    margin: 16px 0;
+    font-style: italic;
+    background-color: rgba(249, 250, 251, 0.5);
+    border-radius: 0 4px 4px 0;
+  }
+
+  :global(.dark .html-email-wrapper blockquote) {
+    border-left-color: #4b5563;
+    background-color: rgba(17, 24, 39, 0.5);
+  }
+
+  /* Code blocks */
+  :global(.html-email-wrapper code) {
+    background-color: #f3f4f6;
+    color: #1f2937;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.875em;
+  }
+
+  :global(.dark .html-email-wrapper code) {
+    background-color: #374151;
+    color: #f9fafb;
+  }
+
+  :global(.html-email-wrapper pre) {
+    background-color: #f9fafb;
+    color: #1f2937;
+    padding: 16px;
+    border-radius: 6px;
+    overflow-x: auto;
+    margin: 16px 0;
+    border: 1px solid #e5e7eb;
+  }
+
+  :global(.dark .html-email-wrapper pre) {
+    background-color: #1f2937;
+    color: #f9fafb;
+    border-color: #4b5563;
+  }
+
+  /* Buttons and styled elements */
+  :global(.html-email-wrapper .button, .html-email-wrapper button, .html-email-wrapper input[type="button"]) {
+    display: inline-block;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    margin: 8px 4px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  /* Fix for white text on white background in dark mode */
+  :global(.dark .html-email-wrapper *[style*="color: white"], .dark .html-email-wrapper *[style*="color: #fff"], .dark .html-email-wrapper *[style*="color: #ffffff"]) {
+    color: #1f2937 !important;
+    background-color: #f9fafb !important;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  /* Fix for black text on dark backgrounds */
+  :global(.html-email-wrapper *[style*="color: black"], .html-email-wrapper *[style*="color: #000"], .html-email-wrapper *[style*="color: #000000"]) {
+    color: #1f2937 !important;
+  }
+
+  :global(.dark .html-email-wrapper *[style*="color: black"], .dark .html-email-wrapper *[style*="color: #000"], .dark .html-email-wrapper *[style*="color: #000000"]) {
+    color: #f9fafb !important;
+  }
+
+  /* Handle company email containers */
+  :global(.html-email-wrapper div[style*="background-color"]) {
+    border-radius: 6px;
+    margin: 8px 0;
+    overflow: hidden;
+  }
+
+  /* Ensure form elements are visible */
+  :global(.html-email-wrapper input, .html-email-wrapper textarea, .html-email-wrapper select) {
+    background-color: white;
+    color: #1f2937;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    padding: 8px 12px;
+  }
+
+  :global(.dark .html-email-wrapper input, .dark .html-email-wrapper textarea, .dark .html-email-wrapper select) {
+    background-color: #374151;
+    color: #f9fafb;
+    border-color: #4b5563;
+  }
+
+  /* Horizontal rules */
+  :global(.html-email-wrapper hr) {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 24px 0;
+  }
+
+  :global(.dark .html-email-wrapper hr) {
+    border-top-color: #4b5563;
+  }
+
+  /* Small text */
+  :global(.html-email-wrapper small) {
+    font-size: 0.75rem;
+    opacity: 0.8;
+  }
+
+  /* Strong emphasis */
+  :global(.html-email-wrapper strong, .html-email-wrapper b) {
+    font-weight: 700;
+  }
+
+  /* Italic emphasis */
+  :global(.html-email-wrapper em, .html-email-wrapper i) {
+    font-style: italic;
   }
 </style>
