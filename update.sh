@@ -39,6 +39,22 @@ git stash pop || true
 # Install dependencies and build
 echo "🔨 Building application..."
 npm install
+
+# Verify environment configuration
+echo "🔧 Checking environment configuration..."
+if [ ! -f ".env" ]; then
+    echo "⚠️  No .env file found. Checking .env.example..."
+    if [ -f ".env.example" ]; then
+        echo "💡 Consider copying .env.example to .env and updating values"
+        echo "   cp .env.example .env"
+        echo "   nano .env"
+    fi
+else
+    echo "✅ Environment file exists"
+fi
+
+# Build the application
+echo "🏗️  Building frontend..."
 npm run build
 
 # Restart PM2 service
