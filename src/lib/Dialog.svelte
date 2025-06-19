@@ -94,13 +94,12 @@
           <h3 id="dialog-title" class="text-lg font-semibold text-gray-900 dark:text-white">
             {title}
           </h3>
-        </div>
-        <button
+        </div>        <button
           on:click={close}
           class="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 transition-colors"
           aria-label="Close dialog"
         >
-          <X size={20} />
+          <X size={20} class="transition-transform duration-200" />
         </button>
       </div>
 
@@ -109,14 +108,12 @@
         <p id="dialog-message" class="text-gray-700 dark:text-gray-300 leading-relaxed">
           {@html message}
         </p>
-      </div>
-
-      <!-- Actions -->
-      <div class="flex gap-3 p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-750">
+      </div>      <!-- Actions -->
+      <div class="flex gap-3 p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
         {#if showCancel}
           <button
             on:click={handleCancel}
-            class="flex-1 px-4 py-2 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="flex-1 px-4 py-2 text-gray-700 dark:text-gray-200 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
           >
             {cancelText}
           </button>
@@ -126,8 +123,8 @@
           <button
             on:click={handleConfirm}
             class="flex-1 px-4 py-2 text-white rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50 {isDangerous 
-              ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' 
-              : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'}"
+              ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500 dark:bg-red-500 dark:hover:bg-red-600 dark:focus:ring-red-400' 
+              : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500 dark:bg-blue-500 dark:hover:bg-blue-600 dark:focus:ring-blue-400'}"
           >
             {confirmText}
           </button>

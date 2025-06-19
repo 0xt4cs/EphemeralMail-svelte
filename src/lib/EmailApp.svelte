@@ -719,41 +719,41 @@
 </script>
 
 <!-- Mobile Header -->
-<header class="lg:hidden bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between">
+<header class="lg:hidden bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 p-4 flex items-center justify-between animate-slide-up">
   <div class="flex items-center gap-2">
-    <img src="/eemail.png" alt="Ephemeral Mail" class="w-8 h-8" />
+    <img src="/eemail.png" alt="Ephemeral Mail" class="w-8 h-8 animate-bounce-subtle logo-light-mode transition-all duration-300" />
     <h1 class="text-xl font-bold text-gray-900 dark:text-white">EphemeralMail</h1>
   </div>
   <div class="flex items-center gap-2">
     <button 
       on:click={toggleDarkMode}
-      class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300"
-      title="Toggle dark mode"
+      class="btn btn-ghost btn-icon transition-all duration-300 hover:scale-110"
+      title={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {#if isDarkMode}
-        <Sun size={20} />
+        <Sun size={20} class="text-yellow-500 transition-all duration-300" />
       {:else}
-        <Moon size={20} />      {/if}    </button>
-    
-    <!-- Mobile Navigation -->
+        <Moon size={20} class="text-indigo-600 dark:text-indigo-400 transition-all duration-300" />
+      {/if}
+    </button>
+      <!-- Mobile Navigation -->
     <div class="flex items-center gap-2">
       {#if currentPanel !== 'addresses'}
         <button 
           on:click={() => currentPanel = 'addresses'}
-          class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300"
+          class="btn btn-ghost btn-icon transition-all duration-300 hover:scale-110"
           title="Back to addresses"
         >
-          <Mail size={20} />
+          <Mail size={20} class="transition-colors duration-200" />
         </button>
       {/if}
       
-      {#if selectedEmailAddress && currentPanel !== 'emails'}
-        <button 
+      {#if selectedEmailAddress && currentPanel !== 'emails'}        <button 
           on:click={() => currentPanel = 'emails'}
-          class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-600 dark:text-gray-300"
+          class="btn btn-ghost btn-icon transition-all duration-300 hover:scale-110"
           title="View emails"
         >
-          <Menu size={20} />
+          <Menu size={20} class="transition-colors duration-200" />
         </button>
       {/if}
     </div>
@@ -761,14 +761,17 @@
 </header>
 
 <!-- Main Container -->
-<div class="flex h-screen bg-gray-50 dark:bg-gray-900">  <!-- Left Panel - Generated Emails -->  <div class="
+<div class="flex h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 transition-colors duration-300">
+
+  <!-- Left Panel - Generated Emails -->  
+  <div class="
     {currentPanel === 'addresses' ? 'block' : 'hidden'} lg:block
-    w-full lg:w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700
-    absolute lg:relative z-10 lg:z-auto h-full
+    w-full lg:w-80 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-r border-gray-200 dark:border-gray-700
+    absolute lg:relative z-10 lg:z-auto h-full animate-fade-in
   "><div class="p-4 border-b border-gray-200 dark:border-gray-700">      <div class="flex items-center justify-between mb-3">
         <div>
           <div class="flex items-center gap-2 mb-1">
-            <img src="/eemail.png" alt="Ephemeral Mail" class="w-5 h-5" />
+            <img src="/eemail.png" alt="Ephemeral Mail" class="w-5 h-5 logo-light-mode transition-all duration-300" />
             <h2 class="text-lg font-semibold text-gray-900 dark:text-white">Generated Emails</h2>
           </div>
           {#if generatedEmails.length > 0}            <p class="text-xs text-gray-500 dark:text-gray-400">
@@ -780,46 +783,45 @@
               {/if}
             </p>
           {/if}
-        </div>
-        <div class="flex items-center gap-2">
+        </div>        <div class="flex items-center gap-2">
           <button 
             on:click={refreshGeneratedEmails}
             disabled={loadingAddresses}
-            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-50"
+            class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 disabled:opacity-50 transition-all duration-200 hover:scale-110"
             title="Refresh generated emails"
           >
-            <RefreshCw size={16} class="{loadingAddresses ? 'animate-spin' : ''}" />
+            <RefreshCw size={16} class="{loadingAddresses ? 'animate-spin' : ''} transition-transform duration-200" />
           </button>
           {#if import.meta.env.DEV}
             <button 
               on:click={clearAllLocalData}
-              class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+              class="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all duration-200 hover:scale-110"
               title="Clear local data (dev only)"
             >
-              <Trash2 size={16} />
+              <Trash2 size={16} class="transition-transform duration-200" />
             </button>
           {/if}
           <button 
             on:click={toggleDarkMode}
-            class="hidden lg:block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300"
+            class="hidden lg:block p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-all duration-200 hover:scale-110"
             title="Toggle dark mode"
           >
             {#if isDarkMode}
-              <Sun size={18} />
+              <Sun size={18} class="text-yellow-500 transition-all duration-300" />
             {:else}
-              <Moon size={18} />
+              <Moon size={18} class="text-indigo-600 dark:text-indigo-400 transition-all duration-300" />
             {/if}
           </button>
         </div>
       </div>      <button 
         on:click={generateNewEmail}
         disabled={loading}
-        class="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 transition-colors"
+        class="w-full btn btn-primary btn-large px-4 py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 transform hover:-translate-y-0.5 transition-all duration-200"
       >
         {#if loading}
           <RefreshCw size={18} class="animate-spin" />
         {:else}
-          <Plus size={18} />
+          <Plus size={18} class="transition-transform duration-200" />
         {/if}
         Generate New Email
       </button>
@@ -827,9 +829,9 @@
       {#if generatedEmails.length > 0}
         <button 
           on:click={clearAllGeneratedEmails}
-          class="w-full mt-2 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition-colors"
+          class="w-full mt-2 btn btn-danger px-4 py-2 rounded-lg flex items-center justify-center gap-2 transform hover:-translate-y-0.5 transition-all duration-200"
         >
-          <Trash2 size={18} />
+          <Trash2 size={18} class="transition-transform duration-200" />
           Clear All ({generatedEmails.length})
         </button>
       {/if}
@@ -844,20 +846,20 @@
           <Mail size={48} class="mx-auto mb-2 text-gray-300 dark:text-gray-600" />
           <p>No emails generated yet</p>
           <p class="text-sm">Click "Generate New Email" to start</p>
-        </div>
-      {:else}
+        </div>      {:else}
         <ul class="divide-y divide-gray-100 dark:divide-gray-700">
           <!-- svelte-ignore a11y_click_events_have_key_events -->
-          {#each generatedEmails as email}
+          {#each generatedEmails as email, index}
             <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
             <li 
-              class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors {selectedEmailAddress === email.address ? 'bg-blue-50 dark:bg-blue-900/30 border-r-2 border-blue-500' : ''}"
+              class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-all duration-200 hover:transform hover:scale-[1.02] animate-fade-in {selectedEmailAddress === email.address ? 'bg-blue-50 dark:bg-blue-900/30 border-r-2 border-blue-500' : ''}"
+              style="animation-delay: {index * 0.05}s"
               on:click={() => selectEmailAddress(email.address)}
             >              <div class="flex items-center justify-between">
                 <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{email.address}</p>
+                  <p class="text-sm font-medium text-gray-900 dark:text-white truncate transition-colors duration-200">{email.address}</p>
                   <div class="flex items-center justify-between mt-1">
-                    <p class="text-xs text-gray-500 dark:text-gray-400">
+                    <p class="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-200">
                       {#if email.createdAt}
                         Created: {formatDate(email.createdAt)}
                       {:else}
@@ -865,13 +867,13 @@
                       {/if}
                     </p>
                     {#if email.emailCount !== undefined}
-                      <span class="text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-2 py-1 rounded-full">
+                      <span class="badge badge-gray text-xs px-2 py-1 rounded-full transition-all duration-200 hover:scale-105">
                         {email.emailCount} email{email.emailCount !== 1 ? 's' : ''}
                       </span>
                     {/if}
                   </div>
                   {#if email.expiresAt}
-                    <p class="text-xs text-red-500 dark:text-red-400">
+                    <p class="text-xs text-red-500 dark:text-red-400 transition-colors duration-200">
                       Expires: {formatDate(email.expiresAt)}
                     </p>
                   {/if}
@@ -879,17 +881,17 @@
                 <div class="flex items-center gap-1 ml-2">
                   <button 
                     on:click|stopPropagation={() => copyEmailAddress(email.address)}
-                    class="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+                    class="p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-all duration-200 hover:scale-110 rounded"
                     title="Copy address"
                   >
-                    <Copy size={16} />
+                    <Copy size={16} class="transition-transform duration-200" />
                   </button>
                   <button 
                     on:click|stopPropagation={() => removeGeneratedEmail(email.address)}
-                    class="p-1 text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 transition-colors"
+                    class="p-1 text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 transition-all duration-200 hover:scale-110 rounded"
                     title="Remove from list"
                   >
-                    <X size={16} />
+                    <X size={16} class="transition-transform duration-200" />
                   </button>
                 </div>
               </div>
@@ -916,110 +918,108 @@
         {/if}
       {/if}
     </div>
-  </div>
-  <!-- Middle Panel - Emails for Selected Address -->  <div class="
+  </div>  <!-- Middle Panel - Emails for Selected Address -->  <div class="
     {currentPanel === 'emails' ? 'block' : 'hidden'} lg:block
-    w-full lg:w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700
+    w-full lg:w-80 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border-r border-gray-200 dark:border-gray-700 animate-fade-in
   ">
     {#if selectedEmailAddress}      <div class="p-4 border-b border-gray-200 dark:border-gray-700">
         <div class="flex items-center justify-between mb-2">
           <div class="flex items-center gap-2">            <button 
               on:click={() => currentPanel = 'addresses'}
-              class="lg:hidden p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              class="lg:hidden p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 hover:scale-110"
               title="Back to addresses"
               aria-label="Back to addresses"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200">
                 <path d="m15 18-6-6 6-6"/>
               </svg>
             </button>
-            <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate">
+            <h3 class="text-lg font-semibold text-gray-900 dark:text-white truncate transition-colors duration-200">
               {selectedEmailAddress}
             </h3>
           </div>
           <div class="flex gap-2">
             <button 
               on:click={refreshEmails}
-              class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 hover:scale-110"
               title="Refresh"
             >
-              <RefreshCw size={18} />
+              <RefreshCw size={18} class="transition-transform duration-200" />
             </button>
             <button 
               on:click={() => deleteAllEmails(selectedEmailAddress)}
-              class="p-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
+              class="p-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition-all duration-200 hover:scale-110"
               title="Delete all emails"
             >
-              <Trash2 size={18} />
+              <Trash2 size={18} class="transition-transform duration-200" />
             </button>
           </div>
         </div>
-        <p class="text-sm text-gray-600 dark:text-gray-400">{emailsForAddress.length} emails</p>
+        <p class="text-sm text-gray-600 dark:text-gray-400 transition-colors duration-200">{emailsForAddress.length} emails</p>
       </div>
       
       <div class="flex-1 overflow-y-auto">
         {#if emailsForAddress.length === 0}
-          <div class="p-4 text-center text-gray-500 dark:text-gray-400">
-            <Mail size={48} class="mx-auto mb-2 text-gray-300 dark:text-gray-600" />
-            <p>No emails received yet</p>
-            <p class="text-sm">Emails will appear here when received</p>
-          </div>
-        {:else}
+          <div class="p-4 text-center text-gray-500 dark:text-gray-400 animate-fade-in">
+            <Mail size={48} class="mx-auto mb-2 text-gray-300 dark:text-gray-600 transition-colors duration-300" />
+            <p class="transition-colors duration-200">No emails received yet</p>
+            <p class="text-sm transition-colors duration-200">Emails will appear here when received</p>
+          </div>{:else}
           <ul class="divide-y divide-gray-100 dark:divide-gray-700">
-            {#each emailsForAddress as email}
+            {#each emailsForAddress as email, index}
               {@const preview = getEmailPreview(email)}
               <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
               <!-- svelte-ignore a11y_click_events_have_key_events -->
               <li 
-                class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors {selectedEmailContent?.id === email.id ? 'bg-blue-50 dark:bg-blue-900/30 border-r-2 border-blue-500' : ''}"
+                class="p-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-all duration-200 hover:transform hover:scale-[1.01] animate-fade-in {selectedEmailContent?.id === email.id ? 'bg-blue-50 dark:bg-blue-900/30 border-r-2 border-blue-500' : ''}"
+                style="animation-delay: {index * 0.03}s"
                 on:click={() => selectEmail(email)}
               >                <div class="flex items-start justify-between">
                   <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2 mb-1">
                       {#if !email.isRead}
-                        <div class="w-2 h-2 bg-blue-500 rounded-full"></div>
+                        <div class="w-2 h-2 bg-blue-500 rounded-full animate-bounce-subtle"></div>
                       {/if}
-                      <p class="text-sm font-medium text-gray-900 dark:text-white truncate">{preview.subject}</p>
-                    </div>                    <p class="text-xs text-gray-600 dark:text-gray-400 truncate">{preview.from}</p>
+                      <p class="text-sm font-medium text-gray-900 dark:text-white truncate transition-colors duration-200">{preview.subject}</p>
+                    </div>                    <p class="text-xs text-gray-600 dark:text-gray-400 truncate transition-colors duration-200">{preview.from}</p>
                     {#if preview.preview}
-                      <p class="text-xs text-gray-600 dark:text-gray-300 truncate mt-1 bg-gray-50 dark:bg-gray-800 px-2 py-1 rounded italic">{preview.preview}</p>
+                      <p class="text-xs text-gray-600 dark:text-gray-300 truncate mt-1 bg-gray-50 dark:bg-gray-800 px-2 py-1 rounded italic transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700">{preview.preview}</p>
                     {/if}
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{formatDate(email.createdAt)}</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-200">{formatDate(email.createdAt)}</p>
                   </div>
                 </div>
               </li>
             {/each}
           </ul>
         {/if}
-      </div>
-    {:else}
-      <div class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+      </div>    {:else}
+      <div class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400 animate-fade-in">
         <div class="text-center">
-          <Mail size={48} class="mx-auto mb-2 text-gray-300 dark:text-gray-600" />
-          <p>Select an email address</p>
-          <p class="text-sm">Choose an email from the left panel</p>
+          <Mail size={48} class="mx-auto mb-2 text-gray-300 dark:text-gray-600 transition-colors duration-300" />
+          <p class="transition-colors duration-200">Select an email address</p>
+          <p class="text-sm transition-colors duration-200">Choose an email from the left panel</p>
         </div>
       </div>
     {/if}
   </div>
   <!-- Right Panel - Email Content -->  <div class="
     {currentPanel === 'content' ? 'block' : 'hidden'} lg:block
-    flex-1 bg-white dark:bg-gray-800
+    flex-1 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm animate-fade-in
   ">
     {#if selectedEmailContent}
-      <div class="h-full flex flex-col">        <!-- Email Header -->
-        <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+      <div class="h-full flex flex-col animate-slide-up">        <!-- Email Header -->
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm transition-colors duration-300">
           <div class="flex items-center gap-2 mb-2">            <button 
               on:click={() => currentPanel = 'emails'}
-              class="lg:hidden p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+              class="lg:hidden p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 hover:scale-110"
               title="Back to emails"
               aria-label="Back to emails"
             >
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200">
                 <path d="m15 18-6-6 6-6"/>
               </svg>
             </button>
-            <h4 class="text-lg font-semibold text-gray-900 dark:text-white">{selectedEmailContent.subject || 'No Subject'}</h4>
+            <h4 class="text-lg font-semibold text-gray-900 dark:text-white transition-colors duration-200">{selectedEmailContent.subject || 'No Subject'}</h4>
           </div>
           <div class="text-sm text-gray-600 dark:text-gray-400 space-y-1">
             <p><span class="font-medium">From:</span> {selectedEmailContent.from || 'Unknown'}</p>
@@ -1030,21 +1030,21 @@
             {/if}
           </div>
         </div>        <!-- Email Body -->
-        <div class="flex-1 overflow-y-auto p-4">
+        <div class="flex-1 overflow-y-auto p-4 animate-fade-in">
           {#if selectedEmailContent.htmlBody}
             <!-- HTML Email Content with preserved styling -->
-            <div class="email-content bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+            <div class="email-content card card-hover bg-white dark:bg-gray-900 rounded-lg p-4 shadow-sm transition-all duration-300">
               <div class="html-email-wrapper">
                 {@html selectedEmailContent.htmlBody}
               </div>
             </div>
           {:else if selectedEmailContent.textBody}
             <!-- Plain Text Email Content -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+            <div class="card card-hover bg-white dark:bg-gray-800 rounded-lg p-4 shadow-sm transition-all duration-300">
               <pre class="whitespace-pre-wrap font-mono text-sm text-gray-900 dark:text-gray-100 leading-relaxed">{selectedEmailContent.textBody}</pre>
             </div>
           {:else}
-            <div class="flex items-center justify-center h-32 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600">
+            <div class="flex items-center justify-center h-32 bg-gray-50 dark:bg-gray-800 rounded-lg border-2 border-dashed border-gray-300 dark:border-gray-600 transition-colors duration-300">
               <p class="text-gray-500 dark:text-gray-400 italic">No content available</p>
             </div>
           {/if}
@@ -1064,17 +1064,34 @@
             </div>
           </div>
         {/if}
-      </div>
-    {:else}
-      <div class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400">
+      </div>    {:else}
+      <div class="flex items-center justify-center h-full text-gray-500 dark:text-gray-400 animate-fade-in">
         <div class="text-center">
-          <Eye size={48} class="mx-auto mb-2 text-gray-300 dark:text-gray-600" />
-          <p>Select an email to view</p>
-          <p class="text-sm">Choose an email from the middle panel</p>
+          <Eye size={48} class="mx-auto mb-2 text-gray-300 dark:text-gray-600 transition-all duration-300 hover:scale-110" />
+          <p class="transition-colors duration-200">Select an email to view</p>
+          <p class="text-sm transition-colors duration-200">Choose an email from the middle panel</p>
         </div>
       </div>
-    {/if}  </div>
+    {/if}</div>
 </div>
+
+<!-- Footer -->
+<footer class="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-t border-gray-200 dark:border-gray-700 p-4 transition-colors duration-300 animate-fade-in">
+  <div class="max-w-7xl mx-auto text-center">
+  
+
+      <p class="mb-1">© {new Date().getFullYear()} 
+        <a 
+          href="https://github.com/0xt4cs" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium transition-all duration-200 hover:scale-105 rounded px-1 hover:bg-blue-50 dark:hover:bg-blue-900/30"
+        >
+          by 0xt4cs
+        </a>
+      </p>
+  </div>
+</footer>
 
 <!-- Global Dialog Component -->
 
