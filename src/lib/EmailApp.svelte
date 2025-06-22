@@ -946,7 +946,7 @@
                 id="manual-email-input"
                 type="text"
                 bind:value={manualEmailPrefix}
-                placeholder="Enter prefix (letters, numbers, ._+-)"
+                placeholder="Prefix"
                 class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 transition-all duration-200"
                 disabled={manualInputLoading}
                 on:keydown={(e) => {
