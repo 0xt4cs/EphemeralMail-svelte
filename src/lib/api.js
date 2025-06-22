@@ -238,7 +238,6 @@ export const emailService = {
       throw new Error('Service unavailable');
     }
   },
-
   // Get list of generated email addresses
   async getGeneratedAddresses(options = {}) {
     try {
@@ -252,6 +251,20 @@ export const emailService = {
     } catch (error) {
       console.error('getGeneratedAddresses error:', error.response?.data || error.message);
       const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || 'Failed to fetch generated addresses';
+      throw new Error(errorMessage);
+    }
+  },
+
+  // Create manual email with custom prefix
+  async createManualEmail(prefix) {
+    try {
+      console.log('Creating manual email with prefix:', prefix);
+      const response = await api.post('/api/emails/manual', { prefix });
+      console.log('Manual email response:', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('createManualEmail error:', error.response?.data || error.message);
+      const errorMessage = error.response?.data?.message || error.response?.data?.error || error.message || 'Failed to create manual email';
       throw new Error(errorMessage);
     }
   },

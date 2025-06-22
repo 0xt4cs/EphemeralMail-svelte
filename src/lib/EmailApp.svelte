@@ -16,7 +16,9 @@
     X,
     Moon,
     Sun
-  } from 'lucide-svelte';// State management
+  } from 'lucide-svelte';
+
+// State management  
   let generatedEmails = [];
   let selectedEmailAddress = null;
   let emailsForAddress = [];
@@ -25,6 +27,11 @@
   let refreshInterval = null;
   let currentPanel = 'addresses'; // 'addresses', 'emails', 'content' for mobile navigation
   let isDarkMode = false;
+  
+  // Manual email input state
+  let showManualInput = false;
+  let manualEmailPrefix = '';
+  let manualInputLoading = false;
   
   // Pagination for emails
   let currentPage = 1;
@@ -43,12 +50,12 @@
     LAST_SYNC: 'ephemeral_last_sync',
     DATA_VERSION: 'ephemeral_data_version'
   };
-  
-  const DATA_VERSION = '1.0.0';
+    const DATA_VERSION = '1.0.0';
   const SYNC_INTERVAL = 5 * 60 * 1000; // 5 minutes
   const MAX_STORED_EMAILS = 100; // Limit stored emails for performance
+  const EMAIL_DOMAIN = import.meta.env.VITE_EMAIL_DOMAIN || 'localhost';
   
-  let saveTimeout = null;  // Generate a new email address
+  let saveTimeout = null;// Generate a new email address
   async function generateNewEmail() {
     loading = true;
     try {
@@ -651,7 +658,6 @@
       await dialogHelpers.error('Delete Failed', `Failed to delete some emails: ${err.message}`);
     }
   }
-
   // Get storage statistics
   function getStorageStats() {
     const stats = localStorageManager.getStorageInfo();
@@ -661,6 +667,90 @@
     }
     return null;
   }
+
+  // Toggle manual email input
+  function toggleManualInput() {
+    showManualInput = !showManualInput;
+    if (showManualInput) {
+      manualEmailPrefix = '';
+    }
+  }
+
+  // Generate manual email
+  async function generateManualEmail() {
+    if (!manualEmailPrefix.trim()) {
+      await dialogHelpers.error('Invalid Input', 'Please enter a valid email prefix.');
+      return;
+    }    // Validate prefix format
+    const prefix = manualEmailPrefix.trim().toLowerCase();
+    if (!/^[a-zA-Z0-9._+-]+$/.test(prefix)) {
+      await dialogHelpers.error('Invalid Format', 'Email prefix can only contain letters, numbers, dots (.), hyphens (-), underscores (_), and plus signs (+). Spaces and other special characters are not allowed.');
+      return;
+    }
+
+    // Additional validation for prefix length and structure
+    if (prefix.length < 1 || prefix.length > 64) {
+      await dialogHelpers.error('Invalid Length', 'Email prefix must be between 1 and 64 characters long.');
+      return;
+    }
+
+    // Check for consecutive dots or dots at start/end
+    if (prefix.includes('..') || prefix.startsWith('.') || prefix.endsWith('.')) {
+      await dialogHelpers.error('Invalid Format', 'Email prefix cannot have consecutive dots or start/end with dots.');
+      return;
+    }
+
+    manualInputLoading = true;
+    try {
+      const emailAddress = `${prefix}@${EMAIL_DOMAIN}`;
+      const response = await emailService.createManualEmail(prefix);
+      
+      if (response.success && response.data) {
+        const newEmail = {
+          address: emailAddress,
+          expiresAt: response.data.expiresAt,
+          createdAt: response.data.createdAt || new Date().toISOString(),
+          emailCount: response.data.emailCount || 0,
+          isManual: true,
+          isExisting: response.data.isExisting || false
+        };
+
+        // Check if email already exists in the list
+        const existingIndex = generatedEmails.findIndex(e => e.address === emailAddress);
+        if (existingIndex >= 0) {
+          // Update existing email
+          generatedEmails[existingIndex] = { ...generatedEmails[existingIndex], ...newEmail };
+        } else {
+          // Add new email to the list
+          generatedEmails = [newEmail, ...generatedEmails];
+        }
+
+        selectedEmailAddress = emailAddress;
+        showManualInput = false;
+        manualEmailPrefix = '';
+        
+        // Save to localStorage
+        saveGeneratedEmailsToStorage();
+        
+        // Load emails for this address
+        await loadEmailsForAddress(emailAddress);
+        
+        const message = response.data.isExisting 
+          ? `Connected to existing email <strong>${emailAddress}</strong> with ${response.data.emailCount || 0} emails.`
+          : `Created new email address <strong>${emailAddress}</strong> successfully.`;
+        
+        await dialogHelpers.success('Email Ready!', message);
+      } else {
+        throw new Error(response.message || 'Failed to create email');
+      }
+    } catch (err) {
+      console.error('Manual email creation failed:', err);
+      await dialogHelpers.error('Creation Failed', `Failed to create email address: ${err.message}`);
+    } finally {
+      manualInputLoading = false;
+    }
+  }
+
   onMount(async () => {
     // Load dark mode preference with fallback
     if (localStorageManager.isAvailable()) {
@@ -815,7 +905,7 @@
         </div>
       </div>      <button 
         on:click={generateNewEmail}
-        disabled={loading}
+        disabled={loading || manualInputLoading}
         class="w-full btn btn-primary btn-large px-4 py-3 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 transform hover:-translate-y-0.5 transition-all duration-200"
       >
         {#if loading}
@@ -825,6 +915,71 @@
         {/if}
         Generate New Email
       </button>
+
+      <!-- Manual Input Button -->
+      <button 
+        on:click={toggleManualInput}
+        disabled={loading || manualInputLoading}
+        class="w-full mt-2 btn btn-secondary px-4 py-2 rounded-lg flex items-center justify-center gap-2 disabled:opacity-50 transform hover:-translate-y-0.5 transition-all duration-200"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="transition-transform duration-200">
+          <path d="M12 20h9"/>
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+        </svg>
+        Input Manually
+      </button>
+
+      <!-- Manual Input Form -->
+      {#if showManualInput}
+        <div class="mt-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-200 dark:border-gray-600 animate-slide-up">
+          <label for="manual-email-input" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            Enter email prefix:
+          </label>
+          <div class="flex gap-2">
+            <div class="flex-1 relative">
+              <input
+                id="manual-email-input"
+                type="text"
+                bind:value={manualEmailPrefix}
+                placeholder="Enter prefix (letters, numbers, ._+-)"
+                class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 transition-all duration-200"
+                disabled={manualInputLoading}
+                on:keydown={(e) => {
+                  if (e.key === 'Enter') {
+                    generateManualEmail();
+                  } else if (e.key === 'Escape') {
+                    showManualInput = false;
+                  }
+                }}
+              />              <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400 pointer-events-none">
+                @{EMAIL_DOMAIN}
+              </div>
+            </div>
+          </div>
+          <div class="flex gap-2 mt-2">
+            <button
+              on:click={generateManualEmail}
+              disabled={manualInputLoading || !manualEmailPrefix.trim()}
+              class="flex-1 btn btn-primary px-3 py-2 text-sm disabled:opacity-50 transition-all duration-200"
+            >
+              {#if manualInputLoading}
+                <RefreshCw size={14} class="animate-spin mr-1" />
+              {/if}
+              Create
+            </button>
+            <button
+              on:click={toggleManualInput}
+              disabled={manualInputLoading}
+              class="btn btn-ghost px-3 py-2 text-sm transition-all duration-200"
+            >
+              Cancel
+            </button>
+          </div>
+          <p class="text-xs text-gray-500 dark:text-gray-400 mt-2">
+            If this email already exists, you'll get access to its history.
+          </p>
+        </div>
+      {/if}
       
       {#if generatedEmails.length > 0}
         <button 
@@ -857,10 +1012,27 @@
               on:click={() => selectEmailAddress(email.address)}
             >              <div class="flex items-center justify-between">
                 <div class="flex-1 min-w-0">
-                  <p class="text-sm font-medium text-gray-900 dark:text-white truncate transition-colors duration-200">{email.address}</p>
+                  <div class="flex items-center gap-2">
+                    <p class="text-sm font-medium text-gray-900 dark:text-white truncate transition-colors duration-200">{email.address}</p>
+                    {#if email.isManual}
+                      <span class="badge badge-blue text-xs px-1.5 py-0.5 rounded transition-all duration-200" title="Manually created">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M12 20h9"/>
+                          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                        </svg>
+                      </span>
+                    {/if}
+                    {#if email.isExisting}
+                      <span class="badge badge-green text-xs px-1.5 py-0.5 rounded transition-all duration-200" title="Existing email with history">
+                        ♻️
+                      </span>
+                    {/if}
+                  </div>
                   <div class="flex items-center justify-between mt-1">
                     <p class="text-xs text-gray-500 dark:text-gray-400 transition-colors duration-200">
-                      {#if email.createdAt}
+                      {#if email.isExisting}
+                        Accessed: {formatDate(email.createdAt)}
+                      {:else if email.createdAt}
                         Created: {formatDate(email.createdAt)}
                       {:else}
                         Recently generated
