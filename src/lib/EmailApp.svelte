@@ -27,11 +27,11 @@
   let refreshInterval = null;
   let currentPanel = 'addresses'; // 'addresses', 'emails', 'content' for mobile navigation
   let isDarkMode = false;
-  
-  // Manual email input state
+    // Manual email input state
   let showManualInput = false;
   let manualEmailPrefix = '';
   let manualInputLoading = false;
+  let emailDomain = 'loading...'; // Will be set from API response
   
   // Pagination for emails
   let currentPage = 1;
@@ -50,17 +50,19 @@
     LAST_SYNC: 'ephemeral_last_sync',
     DATA_VERSION: 'ephemeral_data_version'
   };
-    const DATA_VERSION = '1.0.0';
-  const SYNC_INTERVAL = 5 * 60 * 1000; // 5 minutes
+    const DATA_VERSION = '1.0.0';  const SYNC_INTERVAL = 5 * 60 * 1000; // 5 minutes
   const MAX_STORED_EMAILS = 100; // Limit stored emails for performance
-  const EMAIL_DOMAIN = import.meta.env.VITE_EMAIL_DOMAIN || 'localhost';
   
   let saveTimeout = null;// Generate a new email address
   async function generateNewEmail() {
     loading = true;
     try {
-      const response = await emailService.generateEmail();
-      if (response.success && response.data) {
+      const response = await emailService.generateEmail();      if (response.success && response.data) {
+        // Set domain from the first email address we get
+        if (emailDomain === 'loading...' && response.data.address) {
+          emailDomain = response.data.address.split('@')[1];
+        }
+        
         // Add to the generated emails list
         const newEmail = {
           address: response.data.address,
@@ -698,14 +700,17 @@
     if (prefix.includes('..') || prefix.startsWith('.') || prefix.endsWith('.')) {
       await dialogHelpers.error('Invalid Format', 'Email prefix cannot have consecutive dots or start/end with dots.');
       return;
-    }
-
-    manualInputLoading = true;
+    }    manualInputLoading = true;
     try {
-      const emailAddress = `${prefix}@${EMAIL_DOMAIN}`;
       const response = await emailService.createManualEmail(prefix);
-      
-      if (response.success && response.data) {
+        if (response.success && response.data) {
+        const emailAddress = response.data.address; // Use the address from API response
+        
+        // Set domain from the first email address we get
+        if (emailDomain === 'loading...' && emailAddress) {
+          emailDomain = emailAddress.split('@')[1];
+        }
+        
         const newEmail = {
           address: emailAddress,
           expiresAt: response.data.expiresAt,
@@ -952,7 +957,7 @@
                   }
                 }}
               />              <div class="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 dark:text-gray-400 pointer-events-none">
-                @{EMAIL_DOMAIN}
+                @{emailDomain}
               </div>
             </div>
           </div>
