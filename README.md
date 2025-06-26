@@ -762,7 +762,6 @@ sudo nginx -t
 ---
 
 <div align="center">
-  <p><strong>Made with ❤️ to complement the EphemeralMail API</strong></p>
   <p>⭐ Star this repo if you find it useful!</p>
   <p>🔗 <a href="https://github.com/tacssuki/EphemeralMail">Backend API</a> | <a href="https://github.com/tacssuki/EphemeralMail-svelte/issues">Report Issues</a> | <a href="https://github.com/tacssuki/EphemeralMail-svelte/discussions">Discussions</a></p>
 </div>
